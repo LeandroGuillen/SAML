@@ -6,23 +6,35 @@ package um.seg.sp;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.io.MarshallingException;
 
 public class Controlador extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final String URL_RECURSO = "recurso";
 	private final String URL_RAIZ = "sp";
-	private final String URL_IDP = "localhost:8080/idp"; // http://idp.seg.um:8080/IDP
+	private final String URL_IDP = "http://localhost:8080/idp"; // http://idp.seg.um:8080/IDP
+
+	public Controlador() {
+		try {
+			DefaultBootstrap.bootstrap();
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
 		// Obtener pagina visitada
@@ -57,25 +69,35 @@ public class Controlador extends HttpServlet {
 			out.println(html);
 
 		} catch (MarshallingException ex) {
-//			Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+			// Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE,
+			// null, ex);
 		} finally {
 			out.close();
 		}
-		response.setContentType("text/html;charset=UTF-8");
+
 	}
 
 	private String solicitarRecurso(String html) throws MarshallingException {
-//		AuthnRequest ar = SAMLUtil.createAuthNRequest("sp.seg.um", "idp.seg.um", "sp.seg.um/SP/controlador");
-//		String arString = SAMLUtil.SAMLtoString(ar);
+		AuthnRequest ar = SAMLUtil.createAuthNRequest("sp.seg.um",
+				"idp.seg.um", "sp.seg.um/sp/controlador");
+		String arString = SAMLUtil.SAMLtoString(ar);
+		arString = arString.replaceAll("\"", "'");
 
-		html += "<form id=\"formulario\" action=\"" + URL_IDP + "\" method=\"post\">" + "<input type=\"hidden\" name=\"SAMLRequest\" value=\"valorSAML\"/>" + "<input type=\"submit\" value=\"\"/>"
-				+ "</form>" + "<script> var formulario = document.getElementById('formulario'); formulario.submit(); </script>";
+		html += "<form id=\"formulario\" action=\""
+				+ URL_IDP
+				+ "\" method=\"post\">"
+				+ "<input type=\"hidden\" name=\"SAMLRequest\" value=\""
+				+ arString
+				+ "\"/><input type=\"submit\" value=\"\"/>"
+				+ "</form><h2>Redirigiendo...</h2>"
+				+ "<script> var formulario = document.getElementById('formulario'); formulario.submit(); </script>";
 
 		return html;
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 }

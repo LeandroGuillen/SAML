@@ -2,22 +2,34 @@ package um.seg.idp;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.xml.io.MarshallingException;
+import org.opensaml.xml.ConfigurationException;
+import org.opensaml.xml.io.UnmarshallingException;
+import org.opensaml.xml.parse.XMLParserException;
 
 public class Controlador extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final String URL_RECURSO = "recurso";
 	private final String URL_RAIZ = "idp";
 
+	public Controlador() {
+		try {
+			DefaultBootstrap.bootstrap();
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 
 		// Obtener pagina visitada
@@ -33,13 +45,15 @@ public class Controlador extends HttpServlet {
 			if (pagina.equalsIgnoreCase(URL_RAIZ)) {
 				// Estamos en la pagina raiz
 				String samlReq = request.getParameter("SAMLRequest");
+				samlReq = samlReq.replaceAll("'", "\"");
+				AuthnRequest ar = (AuthnRequest) SAMLUtil.stringToSAML(samlReq);
+
 				html += "<h1>Bienvenido a Identity Provider</h1>";
 				html += "<p>He recibido esto del Service Provider</p>";
-				html += "<p>" + samlReq + "</p>";
+				html += "<pre>" + samlReq + "</pre>";
 
 			} else if (pagina.equalsIgnoreCase(URL_RECURSO)) {
 				// Se ha pedido un recurso
-				html = solicitarRecurso(html);
 
 			} else {
 				// Se ha pedido cualquier otra cosa
@@ -53,26 +67,19 @@ public class Controlador extends HttpServlet {
 			// Volcar en la salida
 			out.println(html);
 
-		} catch (MarshallingException ex) {
-			Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (XMLParserException e) {
+			e.printStackTrace();
+		} catch (UnmarshallingException e) {
+			e.printStackTrace();
 		} finally {
 			out.close();
 		}
 		response.setContentType("text/html;charset=UTF-8");
 	}
 
-	private String solicitarRecurso(String html) throws MarshallingException {
-		AuthnRequest ar = SAMLUtil.createAuthNRequest("sp.seg.um", "idp.seg.um", "sp.seg.um/SP/controlador");
-		String arString = SAMLUtil.SAMLtoString(ar);
-
-		html += "<form id=\"formulario\" action=\"http://idp.seg.um:8080/IDP\" method=\"post\">" + "<input type=\"hidden\" name=\"SAMLRequest\" value=\"valorSAML\"/>"
-				+ "<input type=\"submit\" value=\"\"/>" + "</form>" + "<script> var formulario = document.getElementById('formulario'); formulario.submit(); </script>";
-
-		return html;
-	}
-
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 }
