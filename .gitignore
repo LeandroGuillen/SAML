@@ -3,3 +3,10 @@ Servers
 RemoteSystemsTempFiles
 SP/build
 IDP/build
+IDP/.classpath
+IDP/.settings/org.eclipse.jdt.core.prefs
+IDP/.settings/org.eclipse.wst.common.project.facet.core.xml
+SP/.classpath
+SP/.settings/org.eclipse.jdt.core.prefs
+SP/.settings/org.eclipse.wst.common.project.facet.core.xml
+

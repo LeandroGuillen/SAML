@@ -18,8 +18,14 @@ import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLObjectBuilder;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.RandomIdentifierGenerator;
+import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.Statement;
+import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
@@ -61,13 +67,13 @@ public class ControladorSP extends HttpServlet {
 		String[] trozosURL = request.getRequestURI().split("/");
 		String pagina = trozosURL[trozosURL.length - 1];
 		String html = "";
-		
+
 		try {
 			// Construyendo parte superior del fichero HTML
 			html += "<!DOCTYPE html><html><head><title>Service Provider</title></head><body>";
 			// Obtener la sesion del cliente
 			HttpSession session = request.getSession(true);
-			
+
 			if (pagina.equalsIgnoreCase(URL_RAIZ)) {
 				// Pagina raiz
 				if (session.isNew()) {
@@ -81,11 +87,13 @@ public class ControladorSP extends HttpServlet {
 
 			} else if (pagina.equalsIgnoreCase(URL_RECURSO)) {
 				// Se ha pedido un recurso
-				if (session.isNew() || session.getAttribute("authReqId")==null) {
+
+				String stringResponse = request.getParameter("SAMLResponse");
+				if (session.isNew() || stringResponse == null) {
 					// Es la primera vez que el usuario intenta acceder al
 					// recurso, hay que crear un Authentication Request y
 					// redirigirlo al Identity Provider.
-					AuthnRequest ar = createAuthNRequest("sp.seg.um", "idp.seg.um", "sp.seg.um/sp/recurso");
+					AuthnRequest ar = createAuthNRequest("sp.seg.um:8080", "idp.seg.um:8080", "sp.seg.um:8080/sp/recurso");
 					String arString = SAMLtoString(ar);
 					arString = arString.replaceAll("\"", "'");
 
@@ -100,13 +108,37 @@ public class ControladorSP extends HttpServlet {
 					// se ha autenticado correctamente.
 
 					// Leer response del IDP
+					Response samlResponse = (Response) stringToSAML(stringResponse);
 
 					// Comprobar que Response.ID == AuthnRequest.ID
 
 					// Comprobar que el IDP autentico al usuario correctamente
+					if(samlResponse.getStatus().getStatusCode().equals(StatusCode.SUCCESS_URI)){
+						// Permitir acceder al recurso
 
-					// Permitir acceder al recurso
-					html += "<h1>Preciado Recurso</h1><p>Bienvenido, Paco. Aquí tienes el tan preciado recurso:</p><img width=\"400px\" src = \"" + PRECIADO_RECURSO + "\" />";
+						
+						String algo = samlResponse.getIssuer().getValue();
+						
+						Assertion assertion = samlResponse.getAssertions().get(0);
+						NameID nameID = assertion.getSubject().getNameID();
+
+						html += "Assertion issued by " + assertion.getIssuer().getValue();
+						html += "Subject name: " + nameID.getValue();
+						html += "  (Format " + nameID.getFormat() + ")";
+
+						html += "Authentication context classes found:";
+						for (Statement statement : assertion.getStatements())
+							if (statement instanceof AuthnStatement)
+								html += "  " + ((AuthnStatement) statement).getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef();
+
+						html += "<h1>Preciado Recurso</h1><p>Bienvenido, " + algo + ". Aquí tienes el tan preciado recurso:</p><p>Tu id es " + samlResponse.getID() + "</p><img width=\"400px\" src = \""
+								+ PRECIADO_RECURSO + "\" />";
+					} else {
+						// No se autentico correctamente
+						
+					}
+					
+					
 				}
 
 			} else {
@@ -116,9 +148,15 @@ public class ControladorSP extends HttpServlet {
 				html += "<p><a href=\"/sp/\">Volver al inicio</a></p>";
 			}
 
-			
-
-		} catch (MarshallingException ex) {
+		} catch (XMLParserException e) {
+			html += "<h1>Identity Provider</h1><p>Error al parsear el XML</p>";
+		} catch (UnmarshallingException e) {
+			html += "<h1>Identity Provider</h1><p>Error al deserializar el objeto Authentication Request.</p>";
+		} catch (MarshallingException e) {
+			html += "<h1>Identity Provider</h1><p>Error al serializar el objeto Response.</p>";
+		} catch (Exception e) {
+			html += "<h1>Identity Provider</h1><p>Error no reconocid (probablemente 'Null Pointer Exception').</p>";
+			e.printStackTrace();
 		} finally {
 			// Fin del fichero HTML
 			html += "</body></html>";
@@ -134,6 +172,7 @@ public class ControladorSP extends HttpServlet {
 		doGet(request, response);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static AuthnRequest createAuthNRequest(String issuerId, String destination, String responseURL) {
 		// Create BuilderFactory
 		XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();

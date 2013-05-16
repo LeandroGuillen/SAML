@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -18,11 +19,11 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLObjectBuilder;
 import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Status;
+import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.StatusMessage;
 import org.opensaml.saml2.core.impl.IssuerBuilder;
 import org.opensaml.saml2.core.impl.StatusCodeBuilder;
@@ -42,6 +43,8 @@ import org.opensaml.xml.parse.XMLParserException;
 import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import um.seg.idp.SAMLWriter.SAMLInputContainer;
 
 public class ControladorIDP extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -72,29 +75,30 @@ public class ControladorIDP extends HttpServlet {
 			// Construyendo parte superior del fichero HTML
 			html += "<!DOCTYPE html><html><head><title>Identity Provider</title></head><body>";
 
-			// Obtener la sesion del cliente
-			HttpSession session = request.getSession(true);
-
-			// Comprobamos donde esta queriendo acceder el cliente
 			if (pagina.equalsIgnoreCase(URL_RAIZ)) {
 				// Estamos en la pagina raiz
 				String samlReq = request.getParameter("SAMLRequest");
 
 				if (samlReq != null) {
+					// Obtener la sesion del cliente
+					HttpSession session = request.getSession(true);
+
 					samlReq = samlReq.replaceAll("'", "\"");
 					AuthnRequest ar = (AuthnRequest) stringToSAML(samlReq);
 					DateTime issueInstant = ar.getIssueInstant();
 					// SAMLVersion version = ar.getVersion(); // version 2.0
-					String id = ar.getID();
+					String requestId = ar.getID();
 					String destination = ar.getDestination();
 					String assertionConsumerServiceURL = ar.getAssertionConsumerServiceURL();
-					String issuerValue = ar.getIssuer().getValue();
+					String issuerId = ar.getIssuer().getValue();
+					String nameQualifier = ar.getIssuer().getNameQualifier();
 
-					session.setAttribute("id", id);
+					session.setAttribute("requestId", requestId);
 					session.setAttribute("destination", destination);
 					session.setAttribute("assertionConsumerServiceURL", assertionConsumerServiceURL);
-					session.setAttribute("issuerValue", issuerValue);
+					session.setAttribute("issuerId", issuerId);
 					session.setAttribute("issueInstant", issueInstant);
+					session.setAttribute("nameQualifier", nameQualifier);
 
 					html += "<h1>Bienvenido a Identity Provider</h1><p>Por favor, indentifiquese:</p>";
 					html += "<form id=\"formulario\" action=\"/idp/" + URL_IDENTIFICAR + "\" method=\"post\">" + "Usuario:<input type=\"text\" name=\"user\"></br>"
@@ -106,22 +110,52 @@ public class ControladorIDP extends HttpServlet {
 				}
 
 			} else if (pagina.equalsIgnoreCase(URL_IDENTIFICAR)) {
-				if (!session.isNew()) {
+				// Obtener la sesion del cliente
+				HttpSession session = request.getSession();
+
+				if (session != null && !session.isNew()) {
 					// Obtener datos de la sesion
-					DateTime issueInstant = (DateTime) session.getAttribute("issueInstant");
-					String id = (String) session.getAttribute("id");
+					// DateTime issueInstant = (DateTime)
+					// session.getAttribute("issueInstant");
+					String requestId = (String) session.getAttribute("requestId");
 					String destination = (String) session.getAttribute("destination");
 					String assertionConsumerServiceURL = (String) session.getAttribute("assertionConsumerServiceURL");
-					String issuerValue = (String) session.getAttribute("issuerValue");
+					String issuerId = (String) session.getAttribute("issuerId");
+					String nameQualifier = (String) session.getAttribute("nameQualifier");
+
 					// Obtener datos del formulario
 					String usuario = request.getParameter("user");
 					String password = request.getParameter("pass");
 
+					// Construir respuesta
+					SAMLInputContainer input = new SAMLInputContainer();
+					input.setStrIssuer(issuerId); // service provider
+					input.setStrNameID("paco"); // nombre del usuario en su
+												// dominio
+					input.setStrNameQualifier("seg.um"); // dominio del usuario
+					input.setSessionId(requestId); // sesion entre usuario y IDP
+													// (la misma que con el SP
+													// nos vale)
+
+					// Map customAttributes = new HashMap();
+					// customAttributes.put("FirstName", "Paco");
+					// customAttributes.put("LastName", "Jones");
+					// input.setAttributes(customAttributes);
+					Assertion assertion = SAMLWriter.buildDefaultAssertion(input);
+
+					List<Assertion> assertions = new LinkedList<Assertion>();
+					assertions.add(assertion);
+					Response samlResponse = createResponse(issuerId, requestId, destination, assertions);
+					String stringResponse = SAMLtoString(samlResponse);
+					stringResponse = stringResponse.replaceAll("\"", "'");
+
 					if (autenticacionCorrecta(usuario, password)) {
-//						html += "<p style=\"color:green\">Autenticacion OK. Redirigiendo... </p>";
-//						html += "<form id=\"formulario\" action=\"" + URL_IDP + "\" method=\"post\">" + "<input type=\"hidden\" name=\"SAMLRequest\" value=\"" + arString
-//								+ "\"/><input type=\"submit\" value=\"\"/ style=\"display:hidden\">" + "</form><h2>Redirigiendo...</h2>"
-//								+ "<script> var formulario = document.getElementById('formulario'); formulario.submit(); </script>";
+						String address = "http://" + assertionConsumerServiceURL;
+
+						html += "<p style=\"color:green\">Autenticacion OK. Redirigiendo... </p>";
+						html += "<form id=\"formulario\" action=\"" + address + "\" method=\"post\">" + "<input type=\"hidden\" name=\"SAMLResponse\" value=\"" + stringResponse
+								+ "\"/><input type=\"submit\" value=\"\"/ style=\"display:hidden\">" + "</form><h2>Redirigiendo...</h2>"
+								+ "<script> var formulario = document.getElementById('formulario'); formulario.submit(); </script>";
 					} else {
 						html += "<h1>Bienvenido a Identity Provider</h1><p style=\"color:red\">¡Autenticacion incorrecta!</p><p>Por favor, indentifiquese:</p>";
 						html += "<form id=\"formulario\" action=\"/idp/" + URL_IDENTIFICAR + "\" method=\"post\">" + "Usuario:<input type=\"text\" name=\"user\"></br>"
@@ -140,7 +174,9 @@ public class ControladorIDP extends HttpServlet {
 		} catch (XMLParserException e) {
 			html += "<h1>Identity Provider</h1><p>Error al parsear el XML</p>";
 		} catch (UnmarshallingException e) {
-			html += "<h1>Identity Provider</h1><p>Error al deserializar</p>";
+			html += "<h1>Identity Provider</h1><p>Error al deserializar el objeto Authentication Request.</p>";
+		} catch (MarshallingException e) {
+			html += "<h1>Identity Provider</h1><p>Error al serializar el objeto Response.</p>";
 		} finally {
 			// Fin del fichero HTML
 			html += "</body></html>";
@@ -177,6 +213,7 @@ public class ControladorIDP extends HttpServlet {
 		return (SAMLObject) unmarshaller.unmarshall(samlElement);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Response createResponse(String issuerId, String requestId, String destination, List<Assertion> assertions) {
 		XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 		// Create Response
@@ -202,11 +239,106 @@ public class ControladorIDP extends HttpServlet {
 		response.setStatus(responseStatus);
 
 		// Include assertions
-		// ...
 		response.getAssertions().addAll(assertions);
 		// response.getEncryptedAssertions().addAll(encryptedAssertions);
 		// Set destination
 		response.setDestination(destination);
 		return response;
 	}
+
+	// private Assertion buildSAMLAssertion(SAMLSSOAuthnReqDTO authReqDTO,
+	// DateTime notOnOrAfter, String sessionId) throws IdentityException {
+	// try {
+	// DateTime currentTime = new DateTime();
+	// Assertion samlAssertion = new AssertionBuilder().buildObject();
+	// samlAssertion.setID(SAMLSSOUtil.createID());
+	// samlAssertion.setVersion(SAMLVersion.VERSION_20);
+	// samlAssertion.setIssuer(SAMLSSOUtil.getIssuer());
+	// samlAssertion.setIssueInstant(currentTime);
+	// Subject subject = new SubjectBuilder().buildObject();
+	//
+	// NameID nameId = new NameIDBuilder().buildObject();
+	// if (authReqDTO.getUseFullyQualifiedUsernameAsSubject()) {
+	// nameId.setValue(authReqDTO.getUsername());
+	// nameId.setFormat(NameIdentifier.EMAIL);
+	// } else {
+	// nameId.setValue(MultitenantUtils.getTenantAwareUsername(authReqDTO.getUsername()));
+	// nameId.setFormat(authReqDTO.getNameIDFormat());
+	// }
+	//
+	// subject.setNameID(nameId);
+	//
+	// SubjectConfirmation subjectConfirmation = new
+	// SubjectConfirmationBuilder().buildObject();
+	// subjectConfirmation.setMethod(SAMLSSOConstants.SUBJECT_CONFIRM_BEARER);
+	//
+	// SubjectConfirmationData scData = new
+	// SubjectConfirmationDataBuilder().buildObject();
+	// scData.setRecipient(authReqDTO.getAssertionConsumerURL());
+	// scData.setNotOnOrAfter(notOnOrAfter);
+	// scData.setInResponseTo(authReqDTO.getId());
+	// subjectConfirmation.setSubjectConfirmationData(scData);
+	//
+	// subject.getSubjectConfirmations().add(subjectConfirmation);
+	//
+	// samlAssertion.setSubject(subject);
+	//
+	// AuthnStatement authStmt = new AuthnStatementBuilder().buildObject();
+	// authStmt.setAuthnInstant(new DateTime());
+	//
+	// AuthnContext authContext = new AuthnContextBuilder().buildObject();
+	// AuthnContextClassRef authCtxClassRef = new
+	// AuthnContextClassRefBuilder().buildObject();
+	// authCtxClassRef.setAuthnContextClassRef(AuthnContext.PASSWORD_AUTHN_CTX);
+	// authContext.setAuthnContextClassRef(authCtxClassRef);
+	// authStmt.setAuthnContext(authContext);
+	// if (authReqDTO.isDoSingleLogout()) {
+	// authStmt.setSessionIndex(sessionId);
+	// }
+	// samlAssertion.getAuthnStatements().add(authStmt);
+	//
+	// /*
+	// * If <AttributeConsumingServiceIndex> element is in the
+	// * <AuthnRequest> and according to the spec 2.0 the subject MUST be
+	// * in the assertion
+	// */
+	// Map<String, String> claims = SAMLSSOUtil.getAttributes(authReqDTO);
+	// if (claims != null) {
+	// samlAssertion.getAttributeStatements().add(buildAttributeStatement(claims));
+	// }
+	//
+	// AudienceRestriction audienceRestriction = new
+	// AudienceRestrictionBuilder().buildObject();
+	// Audience issuerAudience = new AudienceBuilder().buildObject();
+	// issuerAudience.setAudienceURI(authReqDTO.getIssuer());
+	// audienceRestriction.getAudiences().add(issuerAudience);
+	// if (authReqDTO.getRequestedAudiences() != null) {
+	// for (String requestedAudience : authReqDTO.getRequestedAudiences()) {
+	// Audience audience = new AudienceBuilder().buildObject();
+	// audience.setAudienceURI(requestedAudience);
+	// audienceRestriction.getAudiences().add(audience);
+	// }
+	// }
+	// Conditions conditions = new ConditionsBuilder().buildObject();
+	// conditions.setNotBefore(currentTime);
+	// conditions.setNotOnOrAfter(notOnOrAfter);
+	// conditions.getAudienceRestrictions().add(audienceRestriction);
+	// samlAssertion.setConditions(conditions);
+	//
+	// if (authReqDTO.getDoSignAssertions()) {
+	// SAMLSSOUtil.setSignature(samlAssertion,
+	// XMLSignature.ALGO_ID_SIGNATURE_RSA, new
+	// SignKeyDataHolder(authReqDTO.getUsername()));
+	// }
+	//
+	// return samlAssertion;
+	// } catch (Exception e) {
+	// log.error("Error when reading claim values for generating SAML Response",
+	// e);
+	// throw new
+	// IdentityException("Error when reading claim values for generating SAML Response",
+	// e);
+	// }
+	// }
+
 }
