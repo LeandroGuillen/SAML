@@ -14,12 +14,12 @@
 	</welcome-file-list>
 
 	<servlet>
-		<servlet-name>Controlador</servlet-name>
-		<servlet-class>um.seg.sp.Controlador</servlet-class>
+		<servlet-name>ControladorSP</servlet-name>
+		<servlet-class>um.seg.sp.ControladorSP</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>Controlador</servlet-name>
+		<servlet-name>ControladorSP</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 

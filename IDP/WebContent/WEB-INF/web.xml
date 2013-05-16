@@ -15,12 +15,12 @@
 
 
 	<servlet>
-		<servlet-name>Controlador</servlet-name>
-		<servlet-class>um.seg.idp.Controlador</servlet-class>
+		<servlet-name>ControladorIDP</servlet-name>
+		<servlet-class>um.seg.idp.ControladorIDP</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>Controlador</servlet-name>
+		<servlet-name>ControladorIDP</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 </web-app>
