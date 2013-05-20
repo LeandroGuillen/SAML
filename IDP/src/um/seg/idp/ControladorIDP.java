@@ -49,7 +49,7 @@ import um.seg.idp.SAMLWriter.SAMLInputContainer;
 public class ControladorIDP extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final String URL_RAIZ = "idp";
-	private final String URL_IDP = "http://localhost:8080/idp";
+	private final String URL_IDP = "http://idp.seg.um:8080/idp";
 	private final String URL_IDENTIFICAR = "identificar";
 	private final String USUARIO = "paco";
 	private final String PASSWORD = "123";
@@ -82,7 +82,6 @@ public class ControladorIDP extends HttpServlet {
 				if (samlReq != null) {
 					// Obtener la sesion del cliente
 					HttpSession session = request.getSession(true);
-
 					samlReq = samlReq.replaceAll("'", "\"");
 					AuthnRequest ar = (AuthnRequest) stringToSAML(samlReq);
 					DateTime issueInstant = ar.getIssueInstant();
@@ -92,17 +91,50 @@ public class ControladorIDP extends HttpServlet {
 					String assertionConsumerServiceURL = ar.getAssertionConsumerServiceURL();
 					String issuerId = ar.getIssuer().getValue();
 					String nameQualifier = ar.getIssuer().getNameQualifier();
+					
+					if (session.getAttribute("stringResponse") == null) {
+						// El usuario se quiere autenticar por primera vez o no
+						// esta autenticado.
+						session.setAttribute("requestId", requestId);
+						session.setAttribute("destination", destination);
+						session.setAttribute("assertionConsumerServiceURL", assertionConsumerServiceURL);
+						session.setAttribute("issuerId", issuerId);
+						session.setAttribute("issueInstant", issueInstant);
+						session.setAttribute("nameQualifier", nameQualifier);
 
-					session.setAttribute("requestId", requestId);
-					session.setAttribute("destination", destination);
-					session.setAttribute("assertionConsumerServiceURL", assertionConsumerServiceURL);
-					session.setAttribute("issuerId", issuerId);
-					session.setAttribute("issueInstant", issueInstant);
-					session.setAttribute("nameQualifier", nameQualifier);
+						// Presentamos un formulario y que nos diga quien es
+						html += "<h1>Bienvenido a Identity Provider</h1><p>Por favor, indentifiquese:</p>";
+						html += "<form id=\"formulario\" action=\"/idp/" + URL_IDENTIFICAR + "\" method=\"post\">" + "Usuario:<input type=\"text\" name=\"user\"></br>"
+								+ "Contraseña:<input type=\"password\" name=\"pass\"></br>" + "<input type=\"submit\" value=\"Identificar\"/></form><p>Esta peticion viene de " + issuerId + "</p>";
+					} else {
+						// Ya fue autenticado con anterioridad
+						// Devolver el Response
+						SAMLInputContainer input = new SAMLInputContainer();
+						input.setStrIssuer(issuerId); // service provider
+						input.setStrNameID(USUARIO); // nombre del usuario en su
+													// dominio
+						input.setStrNameQualifier("seg.um"); // dominio del
+																// usuario
+						input.setSessionId(requestId); // sesion entre usuario y
+														// IDP
+														// (la misma que con el
+														// SP
+														// nos vale)
+						Assertion assertion = SAMLWriter.buildDefaultAssertion(input);
 
-					html += "<h1>Bienvenido a Identity Provider</h1><p>Por favor, indentifiquese:</p>";
-					html += "<form id=\"formulario\" action=\"/idp/" + URL_IDENTIFICAR + "\" method=\"post\">" + "Usuario:<input type=\"text\" name=\"user\"></br>"
-							+ "Contraseña:<input type=\"password\" name=\"pass\"></br>" + "<input type=\"submit\" value=\"Identificar\"/></form>";
+						List<Assertion> assertions = new LinkedList<Assertion>();
+						assertions.add(assertion);
+						Response samlResponse = createResponse(issuerId, requestId, destination, assertions);
+						String stringResponse = SAMLtoString(samlResponse);
+						stringResponse = stringResponse.replaceAll("\"", "'");
+						
+						String address = "http://" + assertionConsumerServiceURL;
+
+						html += "<p style=\"color:green\">Autenticacion OK. Redirigiendo... </p>";
+						html += "<form id=\"formulario\" action=\"" + address + "\" method=\"post\">" + "<input type=\"hidden\" name=\"SAMLResponse\" value=\"" + stringResponse
+								+ "\"/><input type=\"submit\" value=\"\"/ style=\"display:hidden\">" + "</form><h2>Redirigiendo...</h2>"
+								+ "<script> var formulario = document.getElementById('formulario'); formulario.submit(); </script>";
+					}
 				} else {
 					// Intentando acceder directamente a esta pagina? nono!
 					html += "<h1>Bienvenido a Identity Provider</h1>";
@@ -114,54 +146,56 @@ public class ControladorIDP extends HttpServlet {
 				HttpSession session = request.getSession();
 
 				if (session != null && !session.isNew()) {
-					// Obtener datos de la sesion
-					// DateTime issueInstant = (DateTime)
-					// session.getAttribute("issueInstant");
-					String requestId = (String) session.getAttribute("requestId");
-					String destination = (String) session.getAttribute("destination");
-					String assertionConsumerServiceURL = (String) session.getAttribute("assertionConsumerServiceURL");
-					String issuerId = (String) session.getAttribute("issuerId");
-					String nameQualifier = (String) session.getAttribute("nameQualifier");
-
 					// Obtener datos del formulario
 					String usuario = request.getParameter("user");
 					String password = request.getParameter("pass");
 
-					// Construir respuesta
-					SAMLInputContainer input = new SAMLInputContainer();
-					input.setStrIssuer(issuerId); // service provider
-					input.setStrNameID("paco"); // nombre del usuario en su
-												// dominio
-					input.setStrNameQualifier("seg.um"); // dominio del usuario
-					input.setSessionId(requestId); // sesion entre usuario y IDP
-													// (la misma que con el SP
-													// nos vale)
-
-					// Map customAttributes = new HashMap();
-					// customAttributes.put("FirstName", "Paco");
-					// customAttributes.put("LastName", "Jones");
-					// input.setAttributes(customAttributes);
-					Assertion assertion = SAMLWriter.buildDefaultAssertion(input);
-
-					List<Assertion> assertions = new LinkedList<Assertion>();
-					assertions.add(assertion);
-					Response samlResponse = createResponse(issuerId, requestId, destination, assertions);
-					String stringResponse = SAMLtoString(samlResponse);
-					stringResponse = stringResponse.replaceAll("\"", "'");
-
 					if (autenticacionCorrecta(usuario, password)) {
+						// Obtener datos de la sesion
+						// DateTime issueInstant = (DateTime)
+						// session.getAttribute("issueInstant");
+						String requestId = (String) session.getAttribute("requestId");
+						String destination = (String) session.getAttribute("destination");
+						String assertionConsumerServiceURL = (String) session.getAttribute("assertionConsumerServiceURL");
+						String issuerId = (String) session.getAttribute("issuerId");
+						// String nameQualifier = (String)
+						// session.getAttribute("nameQualifier");
+
+						// Construir respuesta
+						SAMLInputContainer input = new SAMLInputContainer();
+						input.setStrIssuer(issuerId); // service provider
+						input.setStrNameID(USUARIO); // nombre del usuario en su
+													// dominio
+						input.setStrNameQualifier("seg.um"); // dominio del
+																// usuario
+						input.setSessionId(requestId); // sesion entre usuario y
+														// IDP
+														// (la misma que con el
+														// SP
+														// nos vale)
+
+						Assertion assertion = SAMLWriter.buildDefaultAssertion(input);
+
+						List<Assertion> assertions = new LinkedList<Assertion>();
+						assertions.add(assertion);
+						Response samlResponse = createResponse(issuerId, requestId, destination, assertions);
+						String stringResponse = SAMLtoString(samlResponse);
+						stringResponse = stringResponse.replaceAll("\"", "'");
+
 						String address = "http://" + assertionConsumerServiceURL;
 
 						html += "<p style=\"color:green\">Autenticacion OK. Redirigiendo... </p>";
 						html += "<form id=\"formulario\" action=\"" + address + "\" method=\"post\">" + "<input type=\"hidden\" name=\"SAMLResponse\" value=\"" + stringResponse
 								+ "\"/><input type=\"submit\" value=\"\"/ style=\"display:hidden\">" + "</form><h2>Redirigiendo...</h2>"
 								+ "<script> var formulario = document.getElementById('formulario'); formulario.submit(); </script>";
+						session.setAttribute("stringResponse", stringResponse);
 					} else {
 						html += "<h1>Bienvenido a Identity Provider</h1><p style=\"color:red\">¡Autenticacion incorrecta!</p><p>Por favor, indentifiquese:</p>";
 						html += "<form id=\"formulario\" action=\"/idp/" + URL_IDENTIFICAR + "\" method=\"post\">" + "Usuario:<input type=\"text\" name=\"user\"></br>"
 								+ "Contraseña:<input type=\"password\" name=\"pass\"></br>" + "<input type=\"submit\" value=\"Identificar\"/></form>";
+						session.invalidate();
 					}
-					session.invalidate();
+
 				} else {
 					html += "<p>Error: No has llegado por una petición de un Service Provider</p>";
 				}
@@ -196,14 +230,14 @@ public class ControladorIDP extends HttpServlet {
 		doGet(request, response);
 	}
 
-	public static String SAMLtoString(XMLObject object) throws MarshallingException {
+	public String SAMLtoString(XMLObject object) throws MarshallingException {
 		MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
 		Marshaller marshaller = marshallerFactory.getMarshaller(object);
 		org.w3c.dom.Element subjectElement = marshaller.marshall(object);
 		return XMLHelper.prettyPrintXML(subjectElement);
 	}
 
-	public static SAMLObject stringToSAML(String samlObject) throws UnsupportedEncodingException, XMLParserException, UnmarshallingException {
+	public SAMLObject stringToSAML(String samlObject) throws UnsupportedEncodingException, XMLParserException, UnmarshallingException {
 		InputStream is = new ByteArrayInputStream(samlObject.getBytes("UTF8"));
 		BasicParserPool parser = new BasicParserPool();
 		Document doc = parser.parse(is);
@@ -245,100 +279,4 @@ public class ControladorIDP extends HttpServlet {
 		response.setDestination(destination);
 		return response;
 	}
-
-	// private Assertion buildSAMLAssertion(SAMLSSOAuthnReqDTO authReqDTO,
-	// DateTime notOnOrAfter, String sessionId) throws IdentityException {
-	// try {
-	// DateTime currentTime = new DateTime();
-	// Assertion samlAssertion = new AssertionBuilder().buildObject();
-	// samlAssertion.setID(SAMLSSOUtil.createID());
-	// samlAssertion.setVersion(SAMLVersion.VERSION_20);
-	// samlAssertion.setIssuer(SAMLSSOUtil.getIssuer());
-	// samlAssertion.setIssueInstant(currentTime);
-	// Subject subject = new SubjectBuilder().buildObject();
-	//
-	// NameID nameId = new NameIDBuilder().buildObject();
-	// if (authReqDTO.getUseFullyQualifiedUsernameAsSubject()) {
-	// nameId.setValue(authReqDTO.getUsername());
-	// nameId.setFormat(NameIdentifier.EMAIL);
-	// } else {
-	// nameId.setValue(MultitenantUtils.getTenantAwareUsername(authReqDTO.getUsername()));
-	// nameId.setFormat(authReqDTO.getNameIDFormat());
-	// }
-	//
-	// subject.setNameID(nameId);
-	//
-	// SubjectConfirmation subjectConfirmation = new
-	// SubjectConfirmationBuilder().buildObject();
-	// subjectConfirmation.setMethod(SAMLSSOConstants.SUBJECT_CONFIRM_BEARER);
-	//
-	// SubjectConfirmationData scData = new
-	// SubjectConfirmationDataBuilder().buildObject();
-	// scData.setRecipient(authReqDTO.getAssertionConsumerURL());
-	// scData.setNotOnOrAfter(notOnOrAfter);
-	// scData.setInResponseTo(authReqDTO.getId());
-	// subjectConfirmation.setSubjectConfirmationData(scData);
-	//
-	// subject.getSubjectConfirmations().add(subjectConfirmation);
-	//
-	// samlAssertion.setSubject(subject);
-	//
-	// AuthnStatement authStmt = new AuthnStatementBuilder().buildObject();
-	// authStmt.setAuthnInstant(new DateTime());
-	//
-	// AuthnContext authContext = new AuthnContextBuilder().buildObject();
-	// AuthnContextClassRef authCtxClassRef = new
-	// AuthnContextClassRefBuilder().buildObject();
-	// authCtxClassRef.setAuthnContextClassRef(AuthnContext.PASSWORD_AUTHN_CTX);
-	// authContext.setAuthnContextClassRef(authCtxClassRef);
-	// authStmt.setAuthnContext(authContext);
-	// if (authReqDTO.isDoSingleLogout()) {
-	// authStmt.setSessionIndex(sessionId);
-	// }
-	// samlAssertion.getAuthnStatements().add(authStmt);
-	//
-	// /*
-	// * If <AttributeConsumingServiceIndex> element is in the
-	// * <AuthnRequest> and according to the spec 2.0 the subject MUST be
-	// * in the assertion
-	// */
-	// Map<String, String> claims = SAMLSSOUtil.getAttributes(authReqDTO);
-	// if (claims != null) {
-	// samlAssertion.getAttributeStatements().add(buildAttributeStatement(claims));
-	// }
-	//
-	// AudienceRestriction audienceRestriction = new
-	// AudienceRestrictionBuilder().buildObject();
-	// Audience issuerAudience = new AudienceBuilder().buildObject();
-	// issuerAudience.setAudienceURI(authReqDTO.getIssuer());
-	// audienceRestriction.getAudiences().add(issuerAudience);
-	// if (authReqDTO.getRequestedAudiences() != null) {
-	// for (String requestedAudience : authReqDTO.getRequestedAudiences()) {
-	// Audience audience = new AudienceBuilder().buildObject();
-	// audience.setAudienceURI(requestedAudience);
-	// audienceRestriction.getAudiences().add(audience);
-	// }
-	// }
-	// Conditions conditions = new ConditionsBuilder().buildObject();
-	// conditions.setNotBefore(currentTime);
-	// conditions.setNotOnOrAfter(notOnOrAfter);
-	// conditions.getAudienceRestrictions().add(audienceRestriction);
-	// samlAssertion.setConditions(conditions);
-	//
-	// if (authReqDTO.getDoSignAssertions()) {
-	// SAMLSSOUtil.setSignature(samlAssertion,
-	// XMLSignature.ALGO_ID_SIGNATURE_RSA, new
-	// SignKeyDataHolder(authReqDTO.getUsername()));
-	// }
-	//
-	// return samlAssertion;
-	// } catch (Exception e) {
-	// log.error("Error when reading claim values for generating SAML Response",
-	// e);
-	// throw new
-	// IdentityException("Error when reading claim values for generating SAML Response",
-	// e);
-	// }
-	// }
-
 }

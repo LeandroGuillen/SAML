@@ -1,6 +1,5 @@
 package um.seg.idp;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,49 +23,43 @@ import org.opensaml.saml2.core.OneTimeUse;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.saml2.core.impl.AssertionMarshaller;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilder;
 import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.schema.XSString;
-import org.opensaml.xml.util.XMLHelper;
-import org.w3c.dom.Element;
 
-/**
- * This is a demo class which creates a valid SAML 2.0 Assertion.
- */
 public class SAMLWriter {
 
-	public static void main(String[] args) {
-		try {
-			SAMLInputContainer input = new SAMLInputContainer();
-			input.strIssuer = "http://synesty.com";
-			input.strNameID = "UserJohnSmith";
-			input.strNameQualifier = "My Website";
-			input.sessionId = "abcdedf1234567";
-
-			Map customAttributes = new HashMap();
-			customAttributes.put("FirstName", "John");
-			customAttributes.put("LastName", "Smith");
-
-			input.attributes = customAttributes;
-
-			Assertion assertion = SAMLWriter.buildDefaultAssertion(input);
-			AssertionMarshaller marshaller = new AssertionMarshaller();
-			Element plaintextElement = marshaller.marshall(assertion);
-			String originalAssertionString = XMLHelper.nodeToString(plaintextElement);
-
-			System.out.println("Assertion String: " + originalAssertionString);
-
-			// TODO: now you can also add encryption....
-
-		} catch (MarshallingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	// public static void main(String[] args) {
+	// try {
+	// SAMLInputContainer input = new SAMLInputContainer();
+	// input.strIssuer = "http://synesty.com";
+	// input.strNameID = "UserJohnSmith";
+	// input.strNameQualifier = "My Website";
+	// input.sessionId = "abcdedf1234567";
+	//
+	// Map customAttributes = new HashMap();
+	// customAttributes.put("FirstName", "John");
+	// customAttributes.put("LastName", "Smith");
+	//
+	// input.attributes = customAttributes;
+	//
+	// Assertion assertion = SAMLWriter.buildDefaultAssertion(input);
+	// AssertionMarshaller marshaller = new AssertionMarshaller();
+	// Element plaintextElement = marshaller.marshall(assertion);
+	// String originalAssertionString =
+	// XMLHelper.nodeToString(plaintextElement);
+	//
+	// System.out.println("Assertion String: " + originalAssertionString);
+	//
+	// // TODO: now you can also add encryption....
+	//
+	// } catch (MarshallingException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	//
+	// }
 
 	private static XMLObjectBuilderFactory builderFactory;
 
@@ -198,6 +191,7 @@ public class SAMLWriter {
 			assertion.getAuthnStatements().add(authnStatement);
 			assertion.getAttributeStatements().add(attrStatement);
 			assertion.setConditions(conditions);
+			assertion.setSubject(subject);
 
 			return assertion;
 		} catch (Exception e) {

@@ -1,4 +1,4 @@
-package um.seg.sp;
+package um.seg.sp2;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -40,14 +40,14 @@ import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ControladorSP extends HttpServlet {
+public class ControladorSP2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final String URL_RECURSO = "recurso";
-	private final String URL_RAIZ = "sp";
+	private final String URL_RAIZ = "sp2";
 	private final String URL_IDP = "http://idp.seg.um:8080/idp"; // http://idp.seg.um:8080/IDP
-	private final String PRECIADO_RECURSO = "http://25.media.tumblr.com/tumblr_m78a4nePqV1r3qwdqo1_500.gif";
+	private final String PRECIADO_RECURSO = "http://www.catsdo.com/wp-content/uploads/2011/05/black-cat-gif.gif";
 
-	public ControladorSP() {
+	public ControladorSP2() {
 		try {
 			DefaultBootstrap.bootstrap();
 		} catch (ConfigurationException e) {
@@ -67,7 +67,7 @@ public class ControladorSP extends HttpServlet {
 		String html = "";
 
 		// Construyendo parte superior del fichero HTML
-		html += "<!DOCTYPE html><html><head><title>Service Provider</title></head><body>";
+		html += "<!DOCTYPE html><html><head><title>Service Provider 2</title></head><body>";
 
 		// Obtener la sesion del cliente, crearla si fuera necesario (true)
 		HttpSession session = request.getSession(true);
@@ -85,7 +85,7 @@ public class ControladorSP extends HttpServlet {
 		} else {
 
 			// Se ha pedido cualquier otra cosa
-			html += "<h1>Bienvenido a Service Provider</h1>";
+			html += "<h1>Bienvenido a Service Provider 2</h1>";
 			html += "<h2>Error 404</h2>" + "<p>La pagina '" + pagina + "' no existe</p>";
 			html += "<p><a href=\"/sp/\">Volver al inicio</a></p>";
 
@@ -101,16 +101,16 @@ public class ControladorSP extends HttpServlet {
 
 	private String tratarPaginaRaiz(HttpSession session, String html) {
 		Object sessionAssertion = session.getAttribute("assertion");
-		if (session.isNew() || sessionAssertion == null) {
+		if (sessionAssertion == null) {
 			// Estamos en la pagina raiz
-			html += "<h1>Bienvenido a Service Provider</h1>";
-			html += "<p>Haz click <a href=\"/sp/recurso\">aqui</a> para obtener el recurso.</p>";
+			html += "<h1>Bienvenido a Service Provider 2</h1>";
+			html += "<p>Haz click <a href=\"/sp2/recurso\">aqui</a> para obtener el recurso.</p>";
 		} else {
 			Assertion assertion = (Assertion) sessionAssertion;
 			NameID nameID = assertion.getSubject().getNameID();
 			String nombre = nameID.getValue() + "@" + nameID.getNameQualifier();
-			html += "<h1>Bienvenido a Service Provider, " + nombre + "</h1>";
-			html += "<p>Haz click <a href=\"/sp/recurso\">aqui</a> para obtener el recurso.</p>";
+			html += "<h1>Bienvenido a Service Provider 2, " + nombre + "</h1>";
+			html += "<p>Haz click <a href=\"/sp2/recurso\">aqui</a> para obtener el recurso.</p>";
 		}
 		return html;
 	}
@@ -122,7 +122,7 @@ public class ControladorSP extends HttpServlet {
 				// Es la primera vez que el usuario intenta acceder al
 				// recurso, hay que crear un Authentication Request y
 				// redirigirlo al Identity Provider.
-				AuthnRequest ar = createAuthNRequest("sp.seg.um:8080", "idp.seg.um:8080", "sp.seg.um:8080/sp/recurso");
+				AuthnRequest ar = createAuthNRequest("sp2.seg.um:8080", "idp.seg.um:8080", "sp2.seg.um:8080/sp2/recurso");
 				String arString = SAMLtoString(ar);
 				arString = arString.replaceAll("\"", "'");
 
@@ -180,13 +180,13 @@ public class ControladorSP extends HttpServlet {
 			}
 
 		} catch (XMLParserException e) {
-			html += "<h1>Service Provider</h1><p>Error al parsear el XML</p>";
+			html += "<h1>Service Provider 2</h1><p>Error al parsear el XML</p>";
 		} catch (UnmarshallingException e) {
-			html += "<h1>Service Provider</h1><p>Error al deserializar el objeto Authentication Request.</p>";
+			html += "<h1>Service Provider 2</h1><p>Error al deserializar el objeto Authentication Request.</p>";
 		} catch (MarshallingException e) {
-			html += "<h1>Service Provider</h1><p>Error al serializar el objeto Response.</p>";
+			html += "<h1>Service Provider 2</h1><p>Error al serializar el objeto Response.</p>";
 		} catch (UnsupportedEncodingException e) {
-			html += "<h1>Service Provider</h1><p>Error al serializar el objeto Response.</p>";
+			html += "<h1>Service Provider 2</h1><p>Error al serializar el objeto Response.</p>";
 		}
 		return html;
 	}
