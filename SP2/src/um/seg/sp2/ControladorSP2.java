@@ -101,7 +101,7 @@ public class ControladorSP2 extends HttpServlet {
 
 	private String tratarPaginaRaiz(HttpSession session, String html) {
 		Object sessionAssertion = session.getAttribute("assertion");
-		if (sessionAssertion == null) {
+		if (session.isNew() || sessionAssertion == null) {
 			// Estamos en la pagina raiz
 			html += "<h1>Bienvenido a Service Provider 2</h1>";
 			html += "<p>Haz click <a href=\"/sp2/recurso\">aqui</a> para obtener el recurso.</p>";
