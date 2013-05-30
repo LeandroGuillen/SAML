@@ -44,7 +44,7 @@ public class ControladorSP2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final String URL_RECURSO = "recurso";
 	private final String URL_RAIZ = "sp2";
-	private final String URL_IDP = "http://idp.seg.um:8080/idp"; // http://idp.seg.um:8080/IDP
+	private final String URL_IDP = "http://idp.seg.um:8080/idp";
 	private final String PRECIADO_RECURSO = "http://www.catsdo.com/wp-content/uploads/2011/05/black-cat-gif.gif";
 
 	public ControladorSP2() {
@@ -139,9 +139,6 @@ public class ControladorSP2 extends HttpServlet {
 				Assertion assertion = (Assertion) session.getAttribute("assertion");
 				NameID nameID = assertion.getSubject().getNameID();
 				String nombre = nameID.getValue() + "@" + nameID.getNameQualifier();
-				// String assertionIssuedBy =
-				// samlResponse.getIssuer().getValue();
-
 				html += "<h1>Preciado Recurso</h1><p>Bienvenido, " + nombre + ". Aquí tienes el tan preciado recurso:</p><img width=\"400px\" src = \"" + PRECIADO_RECURSO + "\" />";
 			} else {
 
@@ -161,13 +158,6 @@ public class ControladorSP2 extends HttpServlet {
 					String assertionIssuedBy = samlResponse.getIssuer().getValue();
 
 					html += "<p>Assertion issued by " + assertionIssuedBy + "</p>";
-					// html += "<p>Authentication context classes found:</p>";
-					// for (Statement statement : assertion.getStatements())
-					// if (statement instanceof AuthnStatement)
-					// html += "  " + ((AuthnStatement)
-					// statement).getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef()
-					// + "<br/>";
-
 					html += "<h1>Preciado Recurso</h1><p>Bienvenido, " + nombre + ". Aquí tienes el tan preciado recurso:</p><img width=\"400px\" src = \"" + PRECIADO_RECURSO + "\" />";
 
 					// Guardar el assertion en el contexto de sesion del

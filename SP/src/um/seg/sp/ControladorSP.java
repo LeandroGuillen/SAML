@@ -161,13 +161,6 @@ public class ControladorSP extends HttpServlet {
 					String assertionIssuedBy = samlResponse.getIssuer().getValue();
 
 					html += "<p>Assertion issued by " + assertionIssuedBy + "</p>";
-					// html += "<p>Authentication context classes found:</p>";
-					// for (Statement statement : assertion.getStatements())
-					// if (statement instanceof AuthnStatement)
-					// html += "  " + ((AuthnStatement)
-					// statement).getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef()
-					// + "<br/>";
-
 					html += "<h1>Preciado Recurso</h1><p>Bienvenido, " + nombre + ". Aquí tienes el tan preciado recurso:</p><img width=\"400px\" src = \"" + PRECIADO_RECURSO + "\" />";
 
 					// Guardar el assertion en el contexto de sesion del
