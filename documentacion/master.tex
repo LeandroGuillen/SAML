@@ -1,0 +1,56 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc} % para acentos y eñes
+\usepackage[spanish]{babel} % en español
+\usepackage{verbatim} % para comentarios multilinea
+\usepackage{moreverb} % para verbatim con tabs
+\usepackage{graphicx} % para imagenes
+\usepackage{hyperref} % para links web e intradocumento
+\usepackage{caption} % para varias imagenes en una linea
+\usepackage{subcaption} % para varias imagenes en una linea
+\usepackage{url}
+
+% \usepackage{times} % tipo de letra de periodico
+\renewcommand{\familydefault}{\sfdefault} % letras sin serifa
+
+%opening
+\title{Perfiles SAML}
+\author{Práctica 1 de Seguridad 2012-13}
+\date{}
+
+
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+Leandro J. Guillén Moreno 48510228P leandrojesus.guillen@um.es
+\end{center}
+
+% \newpage % salto de página manual
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\input{diseno} \newpage
+\input{intercambio} \newpage
+\input{despliegue} \newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+% \appendix
+
+\nocite{samlcore}
+\nocite{samlprofiles}
+\nocite{sureshatt}
+\nocite{oracle}
+\nocite{sessiontracking}
+\nocite{virtualbox}
+\nocite{msdn}
+
+% \section{Sobre este documento}
+% Elaborado con \LaTeX, Kile, openSUSE 64 bits.
+
+\bibliographystyle{plain}
+\bibliography{refs} % mi archivo refs.bib
+
+\end{document}

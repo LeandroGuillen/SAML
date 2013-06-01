@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="intercambio1.svg"
+   inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio1-comentado.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path3985"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3985-0"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-0"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3985-3"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-3"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3985-5"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3985-54"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-6"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3985-8"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-07"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3985-6"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-8"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3985-31"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.72788629"
+     inkscape:cx="-86.997105"
+     inkscape:cy="688.37799"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="973"
+     inkscape:window-x="1278"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <image
+       y="328.68475"
+       x="-517.9212"
+       id="image5545"
+       xlink:href="file:///home/leandro/.eclipse-workspaces/ee-uni-seguridad/documentacion/img/intercambio2.png"
+       height="90"
+       width="849"
+       inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio2-comentado.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g5268"
+       inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio2-comentado.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <flowRoot
+         transform="translate(-432.7599,-68.692048)"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         id="flowRoot2998"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3000"><rect
+             y="296.74966"
+             x="467.10593"
+             height="37.0937"
+             width="527.55499"
+             id="rect3002" /></flowRegion><flowPara
+           style="font-size:22px"
+           id="flowPara3004">Entra a la página principal del Service Provider</flowPara></flowRoot>      <rect
+         ry="2.578423"
+         rx="5.3783102"
+         y="220.21667"
+         x="12.766676"
+         height="44.532536"
+         width="552.8537"
+         id="rect3788"
+         style="fill:none;stroke:#000000;stroke-width:3.75;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 267.14937,265.48584 C 192.57846,341.41731 132.62216,345.88667 34.972284,345.14493"
+       id="path4982"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio2-comentado.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g5166-4"
+       transform="translate(346.89485,109.22034)"
+       inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio2-comentado.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <flowRoot
+         transform="translate(-416.27381,-81.056617)"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         id="flowRoot2998-0"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3000-8"><rect
+             y="296.74966"
+             x="467.10593"
+             height="37.0937"
+             width="527.55499"
+             id="rect3002-7" /></flowRegion><flowPara
+           style="font-size:22px"
+           id="flowPara3004-9">Petición del recurso</flowPara></flowRoot>      <rect
+         ry="2.578423"
+         rx="2.530081"
+         y="207.85211"
+         x="29.252768"
+         height="44.532536"
+         width="260.07513"
+         id="rect3788-3"
+         style="fill:none;stroke:#000000;stroke-width:3.75;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 375.40103,338.67129 c -63.26884,3.09591 -168.10711,40.81217 -274.4227,42.56538"
+       id="path4982-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio2-comentado.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g5166-4-2"
+       transform="translate(332.26451,194.68564)"
+       style="stroke-width:3.75;stroke-miterlimit:4;stroke-dasharray:none">
+      <flowRoot
+         transform="translate(-416.27381,-81.056617)"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         id="flowRoot2998-0-9"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3000-8-3"><rect
+             y="296.74966"
+             x="467.10593"
+             height="37.0937"
+             width="527.55499"
+             id="rect3002-7-9" /></flowRegion><flowPara
+           style="font-size:22px"
+           id="flowPara3004-9-0">Redirección por POST al IDP</flowPara></flowRoot>      <rect
+         ry="2.578423"
+         rx="3.3054602"
+         y="206.88066"
+         x="32.167126"
+         height="44.532536"
+         width="339.77884"
+         id="rect3788-3-4"
+         style="fill:none;stroke:#000000;stroke-width:3.75;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 363.55973,425.92332 C 300.29089,429.01923 234.31071,400.67674 127.99512,402.42995"
+       id="path4982-8-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 362.83113,426.40441 C 282.961,431.92523 106.14871,436.00259 42.750183,421.85436"
+       id="path4982-8-6-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g5166-4-2-5"
+       transform="translate(326.41349,265.60165)"
+       style="stroke-width:3.75;stroke-miterlimit:4;stroke-dasharray:none">
+      <flowRoot
+         transform="translate(-416.27381,-81.056617)"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         id="flowRoot2998-0-9-6"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3000-8-3-5"><rect
+             y="296.74966"
+             x="467.10593"
+             height="37.0937"
+             width="527.55499"
+             id="rect3002-7-9-2" /></flowRegion><flowPara
+           style="font-size:22px"
+           id="flowPara3004-9-0-8">IDP muestra el formulario de login</flowPara></flowRoot>      <rect
+         ry="2.578423"
+         rx="3.9605925"
+         y="206.88066"
+         x="32.167126"
+         height="44.532536"
+         width="407.12198"
+         id="rect3788-3-4-5"
+         style="fill:none;stroke:#000000;stroke-width:3.75;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 358.70246,494.41426 C 337.60519,469.33433 104.44868,441.35377 34.249979,442.26305"
+       id="path4982-8-6-3-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g5166-4-2-5-1"
+       transform="translate(-34.460413,360.23085)"
+       style="stroke-width:3.75;stroke-miterlimit:4;stroke-dasharray:none">
+      <flowRoot
+         transform="translate(-403.22232,-81.743537)"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         id="flowRoot2998-0-9-6-6"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3000-8-3-5-5"><rect
+             y="296.74966"
+             x="467.10593"
+             height="37.0937"
+             width="527.55499"
+             id="rect3002-7-9-2-1" /></flowRegion><flowPara
+           style="font-size:22px"
+           id="flowPara3004-9-0-8-8">IDP redirige al Service Provider</flowPara></flowRoot>      <rect
+         ry="2.578423"
+         rx="3.9605925"
+         y="206.88066"
+         x="32.167126"
+         height="44.532536"
+         width="407.12198"
+         id="rect3788-3-4-5-0"
+         style="fill:none;stroke:#000000;stroke-width:3.75;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 178.59831,565.35504 C 183.71018,513.5193 118.94542,480.89496 21.295553,480.15322"
+       id="path4982-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 178.28542,567.4659 C 166.22428,517.69092 128.07769,502.75478 30.427823,502.01304"
+       id="path4982-1-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g5166-4-2-5-1-7"
+       transform="translate(-447.98653,233.83748)"
+       style="stroke-width:3.75;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio2-comentado.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <flowRoot
+         transform="translate(-403.22232,-81.743537)"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         id="flowRoot2998-0-9-6-6-1"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3000-8-3-5-5-1"><rect
+             y="296.74966"
+             x="467.10593"
+             height="37.0937"
+             width="527.55499"
+             id="rect3002-7-9-2-1-2" /></flowRegion><flowPara
+           style="font-size:22px"
+           id="flowPara3004-9-0-8-8-7">SP ofrece el recurso al cliente</flowPara></flowRoot>      <rect
+         ry="2.578423"
+         rx="3.9605925"
+         y="206.88066"
+         x="32.167126"
+         height="44.532536"
+         width="407.12198"
+         id="rect3788-3-4-5-0-6"
+         style="fill:none;stroke:#000000;stroke-width:3.75;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m -135.64872,440.16808 c -54.13673,-7.31966 -59.41399,-37.35363 10.85024,-37.18688"
+       id="path4982-1-9-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/leandro/seguridad/documentacion/img/intercambio2-comentado.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>
